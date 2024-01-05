@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Table(name = "roles")
-public class Role implements GrantedAuthority {
+public class UserRole implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,15 +17,15 @@ public class Role implements GrantedAuthority {
 
 
     //////////////// CONSTRUCTORS
-    public Role() {
+    public UserRole() {
     }
 
-    public Role(Integer roleId, String authority) {
+    public UserRole(Integer roleId, String authority) {
         this.roleId = roleId;
         this.authority = authority;
     }
 
-    public Role(String authority) {
+    public UserRole(String authority) {
         this.authority = authority;
     }
 

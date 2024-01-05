@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,7 @@ public class TokenService {
     public String generateJwt(Authentication authentication) {
 
         Instant now = Instant.now();
+        Instant expirationTime = now.plus(Duration.ofSeconds(15));
 
         String scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -32,7 +34,9 @@ public class TokenService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self").issuedAt(now)
                 .subject(authentication.getName())
-                .claim("roles", scope).build();
+                .claim("roles", scope)
+                .expiresAt(expirationTime)
+                .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }

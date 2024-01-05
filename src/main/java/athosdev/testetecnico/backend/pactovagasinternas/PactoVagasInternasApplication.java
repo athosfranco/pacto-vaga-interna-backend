@@ -1,6 +1,6 @@
 package athosdev.testetecnico.backend.pactovagasinternas;
 
-import athosdev.testetecnico.backend.pactovagasinternas.model.Role;
+import athosdev.testetecnico.backend.pactovagasinternas.model.UserRole;
 import athosdev.testetecnico.backend.pactovagasinternas.model.User;
 import athosdev.testetecnico.backend.pactovagasinternas.repository.RoleRepository;
 import athosdev.testetecnico.backend.pactovagasinternas.repository.UserRepository;
@@ -26,10 +26,10 @@ public class PactoVagasInternasApplication {
 		return args -> {
 			if(roleRep.findByAuthority("ADMIN").isPresent()) return;
 
-			Role adminRole = roleRep.save(new Role("ADMIN"));
-			roleRep.save(new Role("USER"));
+			UserRole adminRole = roleRep.save(new UserRole("ADMIN"));
+			roleRep.save(new UserRole("USER"));
 
-			Set<Role> roles = new HashSet<>();
+			Set<UserRole> roles = new HashSet<>();
 
 			roles.add(adminRole);
 

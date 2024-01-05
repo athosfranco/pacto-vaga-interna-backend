@@ -27,19 +27,19 @@ public class User implements UserDetails {
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")}
     )
-    private Set<Role> authorities;
+    private Set<UserRole> authorities;
 
     ///////////// NO ARGS CONSTRUCTOR
 
     public User() {
         super();
-        this.authorities = new HashSet<Role>();
+        this.authorities = new HashSet<UserRole>();
     }
 
     ///////////////////////////////
 
     ///////////// ALL ARGS CONSTRUCTOR
-    public User(Integer userId, String username, String password, Set<Role> authorities) {
+    public User(Integer userId, String username, String password, Set<UserRole> authorities) {
         this.userId = userId;
         this.username = username;
         this.password = password;
@@ -60,7 +60,7 @@ public class User implements UserDetails {
         return this.authorities;
     }
 
-    public void setAuthorities(Set<Role> authorities) {
+    public void setAuthorities(Set<UserRole> authorities) {
         this.authorities = authorities;
     }
 

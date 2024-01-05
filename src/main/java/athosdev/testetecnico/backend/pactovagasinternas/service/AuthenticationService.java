@@ -1,7 +1,7 @@
 package athosdev.testetecnico.backend.pactovagasinternas.service;
 
 import athosdev.testetecnico.backend.pactovagasinternas.dto.LoginResponseDTO;
-import athosdev.testetecnico.backend.pactovagasinternas.model.Role;
+import athosdev.testetecnico.backend.pactovagasinternas.model.UserRole;
 import athosdev.testetecnico.backend.pactovagasinternas.model.User;
 import athosdev.testetecnico.backend.pactovagasinternas.repository.RoleRepository;
 import athosdev.testetecnico.backend.pactovagasinternas.repository.UserRepository;
@@ -39,6 +39,8 @@ public class AuthenticationService {
     @Autowired
     private TokenService tokenService;
 
+    private String badCredentialsMessage = "Usuário ou senha inválidos";
+
     public User registerUser(String username, String password) {
         // VERIFICA SE USER JA EXISTE
         if (userRepository.findUserByUsername(username).isPresent()) {
@@ -47,16 +49,15 @@ public class AuthenticationService {
 
         String encodedPassword = passwordEncoder.encode(password);
 
-        Role userRole = roleRepository.findByAuthority("USER").orElseThrow(() -> new RuntimeException("Default user role not found"));
+        UserRole userRole = roleRepository.findByAuthority("USER").orElseThrow(() -> new RuntimeException("Default user role not found"));
 
-        Set<Role> authorities = new HashSet<>();
+        Set<UserRole> authorities = new HashSet<>();
         authorities.add(userRole);
 
         return userRepository.save(new User(0, username, encodedPassword, authorities));
     }
 
     public LoginResponseDTO loginUser(String username, String password) {
-
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
@@ -69,9 +70,8 @@ public class AuthenticationService {
             return new LoginResponseDTO(authenticatedUser, token);
 
         } catch (AuthenticationException e) {
-            return new LoginResponseDTO(null, "");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, badCredentialsMessage, e);
         }
-
-
     }
+
 }
