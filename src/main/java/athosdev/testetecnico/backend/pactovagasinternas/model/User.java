@@ -1,9 +1,12 @@
 package athosdev.testetecnico.backend.pactovagasinternas.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,6 +22,7 @@ public class User implements UserDetails {
 
     private String username;
 
+    @JsonIgnore
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -29,6 +33,29 @@ public class User implements UserDetails {
     )
     private Set<UserRole> authorities;
 
+    @OneToMany(mappedBy = "publishedBy", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private Set<Job> publishedJobs;
+
+    ///////////// DATE TIME
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+
     ///////////// NO ARGS CONSTRUCTOR
 
     public User() {
@@ -36,7 +63,8 @@ public class User implements UserDetails {
         this.authorities = new HashSet<UserRole>();
     }
 
-    ///////////////////////////////
+    //////////////////////////////////
+
 
     ///////////// ALL ARGS CONSTRUCTOR
     public User(Integer userId, String username, String password, Set<UserRole> authorities) {
@@ -44,9 +72,10 @@ public class User implements UserDetails {
         this.username = username;
         this.password = password;
         this.authorities = authorities;
+        this.publishedJobs = new HashSet<>();
     }
 
-    ///////// GETTER SETTER
+    //////////// GETTER SETTER
     public Integer getUserId() {
         return userId;
     }
@@ -65,6 +94,7 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public String getPassword() {
         return this.password;
     }
@@ -101,4 +131,14 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public Set<Job> getPublishedJobs() {
+        return publishedJobs;
+    }
+
+    public void setPublishedJobs(Set<Job> publishedJobs) {
+        this.publishedJobs = publishedJobs;
+    }
+
+
 }

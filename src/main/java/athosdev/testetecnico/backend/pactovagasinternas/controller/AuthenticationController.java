@@ -29,7 +29,7 @@ public class AuthenticationController {
 
         } catch (ResponseStatusException e) {
 
-            ErrorResponseDTO errorResponse = new ErrorResponseDTO(e.getReason());
+            ErrorResponseDTO errorResponse = new ErrorResponseDTO(e.getReason(), (HttpStatus) e.getStatusCode());
             return ResponseEntity.status(e.getStatusCode()).body(errorResponse);
 
         } catch (Exception e) {
@@ -45,7 +45,7 @@ public class AuthenticationController {
             LoginResponseDTO response = authenticationService.loginUser(body.getUsername(), body.getPassword());
             return ResponseEntity.ok(response);
         } catch (ResponseStatusException e) {
-            ErrorResponseDTO errorResponse = new ErrorResponseDTO(e.getReason());
+            ErrorResponseDTO errorResponse = new ErrorResponseDTO(e.getReason(), (HttpStatus) e.getStatusCode());
             return ResponseEntity.status(e.getStatusCode()).body(errorResponse);
         }
     }
