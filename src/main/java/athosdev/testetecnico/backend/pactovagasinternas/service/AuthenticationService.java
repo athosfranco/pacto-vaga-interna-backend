@@ -49,7 +49,7 @@ public class AuthenticationService {
 
         String encodedPassword = passwordEncoder.encode(password);
 
-        UserRole userRole = roleRepository.findByAuthority("USER").orElseThrow(() -> new RuntimeException("Default user role not found"));
+        UserRole userRole = roleRepository.findByAuthority("USER").orElseThrow(() -> new RuntimeException("Autorização não encontrada"));
 
         Set<UserRole> authorities = new HashSet<>();
         authorities.add(userRole);

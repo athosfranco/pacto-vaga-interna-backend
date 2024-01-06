@@ -25,7 +25,7 @@ public class TokenService {
     public String generateJwt(Authentication authentication) {
 
         Instant now = Instant.now();
-        Instant expirationTime = now.plus(Duration.ofSeconds(15));
+        Instant expirationTime = now.plus(Duration.ofHours(1));
 
         String scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)

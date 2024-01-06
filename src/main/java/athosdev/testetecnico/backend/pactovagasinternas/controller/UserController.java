@@ -34,16 +34,11 @@ public class UserController {
             return ResponseEntity.ok(user);
 
         } catch (ResponseStatusException e) {
-
             ErrorResponseDTO errorResponse = new ErrorResponseDTO(e.getReason(), (HttpStatus) e.getStatusCode());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-
         } catch (Exception e) {
-
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-
-
     }
 }

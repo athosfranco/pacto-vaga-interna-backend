@@ -31,7 +31,7 @@ public class JobService {
         if (job.getPublishedByUserId() != null) {
 
             User publishedByUser = userService.getUserById(job.getPublishedByUserId())
-                    .orElseThrow(() -> new RuntimeException("User with ID " + job.getPublishedByUserId() + " not found"));
+                    .orElseThrow(() -> new RuntimeException("O usuário informado não foi encontrado"));
             job.setPublishedBy(publishedByUser);
         }
 

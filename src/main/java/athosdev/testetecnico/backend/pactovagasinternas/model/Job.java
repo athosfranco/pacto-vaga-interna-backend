@@ -1,9 +1,12 @@
 package athosdev.testetecnico.backend.pactovagasinternas.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="jobs")
@@ -25,6 +28,10 @@ public class Job {
 
     @Column(name = "published_by_user_id", insertable = false, updatable = false)
     private Integer publishedByUserId;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "appliedJob", cascade = CascadeType.ALL)
+    private Set<JobApplication> jobApplications = new HashSet<>();
 
     ///////////// DATE TIME
 
@@ -57,11 +64,18 @@ public class Job {
         this.description = description;
         this.publishedBy = null;
         this.publishedByUserId = publishedByUserId;
+        this.jobApplications = new HashSet<>();
     }
 
 
     //// GETTERS SETTERS
+    public Set<JobApplication> getJobApplications() {
+        return jobApplications;
+    }
 
+    public void setJobApplications(Set<JobApplication> jobApplications) {
+        this.jobApplications = jobApplications;
+    }
 
     public Integer getPublishedByUserId() {
         return publishedByUserId;

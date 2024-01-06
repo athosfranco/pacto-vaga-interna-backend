@@ -28,7 +28,7 @@ public class UserService implements UserDetailsService {
 
         System.out.println("In the UserDetailsService");
 
-        return userRepository.findUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Usuário não foi encontrado"));
+        return userRepository.findUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Usuário não foi encontrado (Procurando por username)"));
     }
 
     public List<User> getUserList() {
@@ -37,7 +37,7 @@ public class UserService implements UserDetailsService {
 
     public Optional<User> getUserById(Integer userId) {
         if (userRepository.findById(userId).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Não existe um usuário com ID " + userId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não foi encontrado (Procurando por ID)");
         }
 
         return userRepository.findById(userId);

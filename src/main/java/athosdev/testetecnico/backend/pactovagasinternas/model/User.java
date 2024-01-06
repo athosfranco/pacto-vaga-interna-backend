@@ -33,9 +33,13 @@ public class User implements UserDetails {
     )
     private Set<UserRole> authorities;
 
-    @OneToMany(mappedBy = "publishedBy", cascade = CascadeType.ALL)
     @JsonBackReference
+    @OneToMany(mappedBy = "publishedBy", cascade = CascadeType.ALL)
     private Set<Job> publishedJobs;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL)
+    private Set<JobApplication> jobApplications = new HashSet<>();
 
     ///////////// DATE TIME
 
@@ -61,6 +65,8 @@ public class User implements UserDetails {
     public User() {
         super();
         this.authorities = new HashSet<UserRole>();
+        this.publishedJobs = new HashSet<>();
+        this.jobApplications = new HashSet<>();
     }
 
     //////////////////////////////////
@@ -73,6 +79,7 @@ public class User implements UserDetails {
         this.password = password;
         this.authorities = authorities;
         this.publishedJobs = new HashSet<>();
+        this.jobApplications = new HashSet<>();
     }
 
     //////////// GETTER SETTER
@@ -82,6 +89,14 @@ public class User implements UserDetails {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Set<JobApplication> getJobApplications() {
+        return jobApplications;
+    }
+
+    public void setJobApplications(Set<JobApplication> jobApplications) {
+        this.jobApplications = jobApplications;
     }
 
     @Override
