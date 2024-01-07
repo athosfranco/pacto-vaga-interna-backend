@@ -21,19 +21,17 @@ public class Job {
 
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "published_by_user_id")
-    @JsonManagedReference
-    private User publishedBy;
-
-    @Column(name = "published_by_user_id", insertable = false, updatable = false)
+    @Column(name = "published_by_user_id")
     private Integer publishedByUserId;
 
-    @JsonBackReference
-    @OneToMany(mappedBy = "appliedJob", cascade = CascadeType.ALL)
-    private Set<JobApplication> jobApplications = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "job_skills_junction",
+            joinColumns = @JoinColumn(name = "job_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id")
+    )
+    private Set<Skill> requiredSkills = new HashSet<>();
 
-    ///////////// DATE TIME
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -52,30 +50,11 @@ public class Job {
     }
 
 
-    //// NO ARGS CONSTRUCTOR
+
     public Job() {
     }
 
-    /// ALL ARGS CONSTRUCTOR
-
-    public Job(Integer jobId, String title, String description, Integer publishedByUserId) {
-        this.jobId = jobId;
-        this.title = title;
-        this.description = description;
-        this.publishedBy = null;
-        this.publishedByUserId = publishedByUserId;
-        this.jobApplications = new HashSet<>();
-    }
-
-
     //// GETTERS SETTERS
-    public Set<JobApplication> getJobApplications() {
-        return jobApplications;
-    }
-
-    public void setJobApplications(Set<JobApplication> jobApplications) {
-        this.jobApplications = jobApplications;
-    }
 
     public Integer getPublishedByUserId() {
         return publishedByUserId;
@@ -109,12 +88,12 @@ public class Job {
         this.description = description;
     }
 
-    public User getPublishedBy() {
-        return publishedBy;
+    public Set<Skill> getRequiredSkills() {
+        return requiredSkills;
     }
 
-    public void setPublishedBy(User publishedBy) {
-        this.publishedBy = publishedBy;
+    public void setRequiredSkills(Set<Skill> requiredSkills) {
+        this.requiredSkills = requiredSkills;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -133,15 +112,4 @@ public class Job {
         this.updatedAt = updatedAt;
     }
 
-    @Override
-    public String toString() {
-        return "Job{" +
-                "jobId=" + jobId +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", publishedBy=" + publishedBy +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
-    }
 }

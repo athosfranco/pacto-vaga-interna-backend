@@ -1,5 +1,7 @@
 package athosdev.testetecnico.backend.pactovagasinternas.model;
 
+import athosdev.testetecnico.backend.pactovagasinternas.enums.JobApplicationStage;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -24,21 +26,18 @@ public class JobApplication {
     @JoinColumn(name = "job_id", nullable = false)
     private Job appliedJob;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "stage", nullable = false)
+//    @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+    private JobApplicationStage applicationStage;
+
     @Column(name = "application_date", nullable = false, updatable = false)
     private LocalDateTime applicationDate;
 
     // CONSTRUCTORS
 
     public JobApplication() {
-        this.applicationDate = LocalDateTime.now();
     }
-
-    public JobApplication(User applicant, Job appliedJob) {
-        this.applicant = applicant;
-        this.appliedJob = appliedJob;
-        this.applicationDate = LocalDateTime.now();
-    }
-
     // GETTER SETTER
 
     public Integer getApplicationId() {
@@ -63,6 +62,14 @@ public class JobApplication {
 
     public void setAppliedJob(Job appliedJob) {
         this.appliedJob = appliedJob;
+    }
+
+    public JobApplicationStage getApplicationStage() {
+        return applicationStage;
+    }
+
+    public void setApplicationStage(JobApplicationStage applicationStage) {
+        this.applicationStage = applicationStage;
     }
 
     public LocalDateTime getApplicationDate() {

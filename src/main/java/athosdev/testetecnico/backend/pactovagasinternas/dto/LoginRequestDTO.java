@@ -1,15 +1,15 @@
 package athosdev.testetecnico.backend.pactovagasinternas.dto;
 
-public class LoginUserDTO {
+public class LoginRequestDTO {
 
     private String username;
 
     private String password;
 
-    public LoginUserDTO() {
+    public LoginRequestDTO() {
     }
 
-    public LoginUserDTO(String username, String password) {
+    public LoginRequestDTO(String username, String password) {
         this.username = username;
         this.password = password;
     }

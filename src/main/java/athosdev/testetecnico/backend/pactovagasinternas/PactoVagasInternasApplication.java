@@ -15,27 +15,8 @@ import java.util.Set;
 
 @SpringBootApplication
 public class PactoVagasInternasApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(PactoVagasInternasApplication.class, args);
 	}
 
-
-	@Bean
-	CommandLineRunner run(RoleRepository roleRep, UserRepository userRep, PasswordEncoder pwdEncoder) {
-		return args -> {
-			if(roleRep.findByAuthority("ADMIN").isPresent()) return;
-
-			UserRole adminRole = roleRep.save(new UserRole("ADMIN"));
-			roleRep.save(new UserRole("USER"));
-
-			Set<UserRole> roles = new HashSet<>();
-
-			roles.add(adminRole);
-
-			User admin = new User(1, "admin", pwdEncoder.encode("123"), roles);
-
-			userRep.save(admin);
-		};
-	}
 }

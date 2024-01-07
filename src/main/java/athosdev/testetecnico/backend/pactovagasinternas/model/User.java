@@ -33,15 +33,13 @@ public class User implements UserDetails {
     )
     private Set<UserRole> authorities;
 
-    @JsonBackReference
-    @OneToMany(mappedBy = "publishedBy", cascade = CascadeType.ALL)
-    private Set<Job> publishedJobs;
-
-    @JsonBackReference
-    @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL)
-    private Set<JobApplication> jobApplications = new HashSet<>();
-
-    ///////////// DATE TIME
+    @ManyToMany
+    @JoinTable(
+            name = "user_skills_junction",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id")
+    )
+    private Set<Skill> skills = new HashSet<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -60,26 +58,11 @@ public class User implements UserDetails {
     }
 
 
-    ///////////// NO ARGS CONSTRUCTOR
+    ///////////// CONSTRUCTOR
 
     public User() {
         super();
         this.authorities = new HashSet<UserRole>();
-        this.publishedJobs = new HashSet<>();
-        this.jobApplications = new HashSet<>();
-    }
-
-    //////////////////////////////////
-
-
-    ///////////// ALL ARGS CONSTRUCTOR
-    public User(Integer userId, String username, String password, Set<UserRole> authorities) {
-        this.userId = userId;
-        this.username = username;
-        this.password = password;
-        this.authorities = authorities;
-        this.publishedJobs = new HashSet<>();
-        this.jobApplications = new HashSet<>();
     }
 
     //////////// GETTER SETTER
@@ -89,14 +72,6 @@ public class User implements UserDetails {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
-    }
-
-    public Set<JobApplication> getJobApplications() {
-        return jobApplications;
-    }
-
-    public void setJobApplications(Set<JobApplication> jobApplications) {
-        this.jobApplications = jobApplications;
     }
 
     @Override
@@ -147,13 +122,12 @@ public class User implements UserDetails {
         return true;
     }
 
-    public Set<Job> getPublishedJobs() {
-        return publishedJobs;
+    public Set<Skill> getSkills() {
+        return skills;
     }
 
-    public void setPublishedJobs(Set<Job> publishedJobs) {
-        this.publishedJobs = publishedJobs;
+    public void setSkills(Set<Skill> skills) {
+        this.skills = skills;
     }
-
 
 }

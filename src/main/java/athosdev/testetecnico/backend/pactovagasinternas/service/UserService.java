@@ -1,6 +1,8 @@
 package athosdev.testetecnico.backend.pactovagasinternas.service;
 
+import athosdev.testetecnico.backend.pactovagasinternas.model.Skill;
 import athosdev.testetecnico.backend.pactovagasinternas.model.User;
+import athosdev.testetecnico.backend.pactovagasinternas.repository.SkillRepository;
 import athosdev.testetecnico.backend.pactovagasinternas.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private SkillRepository skillRepository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -39,7 +44,8 @@ public class UserService implements UserDetailsService {
         if (userRepository.findById(userId).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não foi encontrado (Procurando por ID)");
         }
-
         return userRepository.findById(userId);
     }
+
+
 }

@@ -3,14 +3,20 @@ package athosdev.testetecnico.backend.pactovagasinternas.service;
 import athosdev.testetecnico.backend.pactovagasinternas.model.Job;
 import athosdev.testetecnico.backend.pactovagasinternas.model.User;
 import athosdev.testetecnico.backend.pactovagasinternas.repository.JobRepository;
+import athosdev.testetecnico.backend.pactovagasinternas.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class JobService {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private JobRepository jobRepository;
@@ -27,13 +33,9 @@ public class JobService {
     }
 
     public Job saveJob(Job job) {
-
-        if (job.getPublishedByUserId() != null) {
-
-            User publishedByUser = userService.getUserById(job.getPublishedByUserId())
-                    .orElseThrow(() -> new RuntimeException("O usuário informado não foi encontrado"));
-            job.setPublishedBy(publishedByUser);
-        }
+       if(job.getPublishedByUserId() == null) {
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "É necessário informar o ID do usuário responsável pela vaga");
+       }
 
         return jobRepository.save(job);
     }

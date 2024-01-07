@@ -2,7 +2,7 @@ package athosdev.testetecnico.backend.pactovagasinternas.controller;
 
 import athosdev.testetecnico.backend.pactovagasinternas.dto.ErrorResponseDTO;
 import athosdev.testetecnico.backend.pactovagasinternas.dto.LoginResponseDTO;
-import athosdev.testetecnico.backend.pactovagasinternas.dto.LoginUserDTO;
+import athosdev.testetecnico.backend.pactovagasinternas.dto.LoginRequestDTO;
 import athosdev.testetecnico.backend.pactovagasinternas.dto.RegisterUserDTO;
 import athosdev.testetecnico.backend.pactovagasinternas.model.User;
 import athosdev.testetecnico.backend.pactovagasinternas.service.AuthenticationService;
@@ -40,7 +40,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginUserDTO body) {
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequestDTO body) {
         try {
             LoginResponseDTO response = authenticationService.loginUser(body.getUsername(), body.getPassword());
             return ResponseEntity.ok(response);

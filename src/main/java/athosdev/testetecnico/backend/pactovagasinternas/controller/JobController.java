@@ -1,6 +1,10 @@
 package athosdev.testetecnico.backend.pactovagasinternas.controller;
 
+import athosdev.testetecnico.backend.pactovagasinternas.dto.JobResponseDTO;
+import athosdev.testetecnico.backend.pactovagasinternas.exception.UserNotFoundException;
 import athosdev.testetecnico.backend.pactovagasinternas.model.Job;
+import athosdev.testetecnico.backend.pactovagasinternas.model.User;
+import athosdev.testetecnico.backend.pactovagasinternas.repository.UserRepository;
 import athosdev.testetecnico.backend.pactovagasinternas.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +20,9 @@ import java.util.Optional;
 public class JobController {
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private JobService jobService;
 
     @GetMapping("/test")
@@ -23,19 +30,36 @@ public class JobController {
         return "TEST";
     }
 
-    @GetMapping("/")
+    @GetMapping
     public List<Job> getAllJobs() {
         return jobService.getAllJobs();
     }
 
-    @GetMapping("/{jobId}")
-    public ResponseEntity<Job> getJobById(@PathVariable Integer jobId) {
-        Optional<Job> job = jobService.getJobById(jobId);
-        return job.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    private JobResponseDTO convertToJobResponseDTO(Job job, User publishedBy) {
+        JobResponseDTO jobResponseDTO = new JobResponseDTO();
+        jobResponseDTO.setJobId(job.getJobId());
+        jobResponseDTO.setTitle(job.getTitle());
+        jobResponseDTO.setDescription(job.getDescription());
+        jobResponseDTO.setPublishedBy(publishedBy);
+        return jobResponseDTO;
     }
 
-    @PostMapping("/")
+    @GetMapping("/{jobId}")
+    public ResponseEntity<JobResponseDTO> getJobById(@PathVariable Integer jobId) {
+        Optional<Job> job = jobService.getJobById(jobId);
+
+        return job.map(value -> {
+            Integer publishedByUserId = value.getPublishedByUserId();
+            User publishedBy = userRepository.findById(publishedByUserId)
+                    .orElseThrow(() -> new UserNotFoundException("Usuário com ID " + publishedByUserId + " não encontrado"));
+
+            JobResponseDTO jobResponseDTO = convertToJobResponseDTO(value, publishedBy);
+            return new ResponseEntity<>(jobResponseDTO, HttpStatus.OK);
+        }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+
+    @PostMapping
     public ResponseEntity<Job> createJob(@RequestBody Job job) {
         Job savedJob = jobService.saveJob(job);
         return new ResponseEntity<>(savedJob, HttpStatus.CREATED);

@@ -32,7 +32,7 @@ public class JobApplicationController {
     @Autowired
     private JobService jobService;
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<JobApplication> applyToJob(@RequestParam Integer userId, @RequestParam Integer jobId) {
         User applicant = userService.getUserById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Usuário ID" + userId + " não encontrado"));
@@ -45,9 +45,15 @@ public class JobApplicationController {
         return new ResponseEntity<>(jobApplication, HttpStatus.CREATED);
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<JobApplication>> getAllJobApplications() {
         List<JobApplication> jobApplications = jobApplicationService.getAllJobApplications();
+        return new ResponseEntity<>(jobApplications, HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<JobApplication>> getJobApplicationsByUserId(@PathVariable Integer userId) {
+        List<JobApplication> jobApplications = jobApplicationService.getJobApplicationsByUserId(userId);
         return new ResponseEntity<>(jobApplications, HttpStatus.OK);
     }
 
@@ -72,6 +78,5 @@ public class JobApplicationController {
         jobApplicationService.deleteJobApplication(applicationId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 
 }
