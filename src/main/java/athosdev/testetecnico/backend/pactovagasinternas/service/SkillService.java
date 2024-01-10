@@ -67,6 +67,21 @@ public class SkillService {
         jobRepository.save(job);
     }
 
+    public Skill getOrCreateSkill(Skill skill) {
+        Skill existingSkill = skillRepository.findSkillBySkillName(skill.getSkillName());
+
+        if (existingSkill == null) {
+            ////// Se a Skill não existir, cria a skill //////
+            existingSkill = new Skill();
+            existingSkill.setSkillName(skill.getSkillName());
+            existingSkill.setExperienceYears(skill.getExperienceYears());
+            skillRepository.save(existingSkill);
+        }
+
+        return existingSkill;
+    }
+
+
     public Set<Skill> getJobSkills(Integer jobId) {
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vaga não encontrada"));

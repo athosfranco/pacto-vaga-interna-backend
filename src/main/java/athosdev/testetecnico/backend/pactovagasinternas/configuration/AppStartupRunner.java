@@ -47,6 +47,7 @@ public class AppStartupRunner implements ApplicationRunner {
         admin.setUsername("admin");
         admin.setPassword(passwordEncoder.encode("123"));
         admin.setAuthorities(roles);
+        admin.setFirstName("Administrador");
 
         userRepository.save(admin);
     }

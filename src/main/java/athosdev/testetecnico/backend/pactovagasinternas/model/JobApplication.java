@@ -31,6 +31,8 @@ public class JobApplication {
 //    @JsonFormat(shape = JsonFormat.Shape.OBJECT)
     private JobApplicationStage applicationStage;
 
+    @Column(name="user_message")
+    private String userMessage;
     @Column(name = "application_date", nullable = false, updatable = false)
     private LocalDateTime applicationDate;
 
@@ -70,6 +72,14 @@ public class JobApplication {
 
     public void setApplicationStage(JobApplicationStage applicationStage) {
         this.applicationStage = applicationStage;
+    }
+
+    public String getUserMessage() {
+        return userMessage;
+    }
+
+    public void setUserMessage(String userMessage) {
+        this.userMessage = userMessage;
     }
 
     public LocalDateTime getApplicationDate() {

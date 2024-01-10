@@ -20,33 +20,25 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterUserDTO body) {
-        try {
-
-            User user = authenticationService.registerUser(body.getUsername(), body.getPassword());
-            return ResponseEntity.ok(user);
-
-        } catch (ResponseStatusException e) {
-
-            ErrorResponseDTO errorResponse = new ErrorResponseDTO(e.getReason(), (HttpStatus) e.getStatusCode());
-            return ResponseEntity.status(e.getStatusCode()).body(errorResponse);
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequestDTO body) {
         try {
             LoginResponseDTO response = authenticationService.loginUser(body.getUsername(), body.getPassword());
             return ResponseEntity.ok(response);
         } catch (ResponseStatusException e) {
-            ErrorResponseDTO errorResponse = new ErrorResponseDTO(e.getReason(), (HttpStatus) e.getStatusCode());
+            ErrorResponseDTO errorResponse = new ErrorResponseDTO(e.getReason(), e.getStatusCode());
             return ResponseEntity.status(e.getStatusCode()).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody RegisterUserDTO newUser) {
+        try {
+            User user = authenticationService.registerUser(newUser);
+            return ResponseEntity.ok(user);
+        } catch (ResponseStatusException e)  {
+            ErrorResponseDTO errorResponse = new ErrorResponseDTO(e.getMessage(), e.getStatusCode());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 

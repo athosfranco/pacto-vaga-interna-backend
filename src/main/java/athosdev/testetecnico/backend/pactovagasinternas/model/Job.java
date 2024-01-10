@@ -19,6 +19,7 @@ public class Job {
 
     private String title;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "published_by_user_id")

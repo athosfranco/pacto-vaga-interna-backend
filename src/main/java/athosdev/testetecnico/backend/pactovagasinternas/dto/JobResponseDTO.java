@@ -1,6 +1,10 @@
 package athosdev.testetecnico.backend.pactovagasinternas.dto;
 
+import athosdev.testetecnico.backend.pactovagasinternas.model.Skill;
 import athosdev.testetecnico.backend.pactovagasinternas.model.User;
+
+import java.time.LocalDateTime;
+import java.util.Set;
 
 public class JobResponseDTO {
 
@@ -11,6 +15,10 @@ public class JobResponseDTO {
     private String description;
 
     private User publishedBy;
+
+    private LocalDateTime createdAt;
+
+    private Set<Skill> requiredSkills;
 
     public JobResponseDTO() {
      }
@@ -41,6 +49,22 @@ public class JobResponseDTO {
 
     public User getPublishedBy() {
         return publishedBy;
+    }
+
+    public Set<Skill> getRequiredSkills() {
+        return requiredSkills;
+    }
+
+    public void setRequiredSkills(Set<Skill> requiredSkills) {
+        this.requiredSkills = requiredSkills;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public void setPublishedBy(User publishedBy) {

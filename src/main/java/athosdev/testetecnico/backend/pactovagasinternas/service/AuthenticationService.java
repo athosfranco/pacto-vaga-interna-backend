@@ -1,10 +1,12 @@
 package athosdev.testetecnico.backend.pactovagasinternas.service;
 
 import athosdev.testetecnico.backend.pactovagasinternas.dto.LoginResponseDTO;
+import athosdev.testetecnico.backend.pactovagasinternas.dto.RegisterUserDTO;
 import athosdev.testetecnico.backend.pactovagasinternas.model.UserRole;
 import athosdev.testetecnico.backend.pactovagasinternas.model.User;
 import athosdev.testetecnico.backend.pactovagasinternas.repository.RoleRepository;
 import athosdev.testetecnico.backend.pactovagasinternas.repository.UserRepository;
+import athosdev.testetecnico.backend.pactovagasinternas.utils.PasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,23 +43,35 @@ public class AuthenticationService {
 
     private String badCredentialsMessage = "Usuário ou senha inválidos";
 
-    public User registerUser(String username, String password) {
+    public User registerUser(RegisterUserDTO user) {
         // VERIFICA SE USER JA EXISTE
-        if (userRepository.findUserByUsername(username).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O usuário '" + username + "' já existe");
+        if (userRepository.findUserByUsername(user.getUsername()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O usuário '" + user.getUsername() + "' já existe.");
         }
 
-        String encodedPassword = passwordEncoder.encode(password);
+        //VALIDA A SENHA
+        String encodedPassword;
+        if (PasswordValidator.isValid(user.getPassword())) {
+            encodedPassword = passwordEncoder.encode(user.getPassword());
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A senha precisa ter pelo menos 8 caracteres, uma letra e um número.");
+        }
 
-        UserRole userRole = roleRepository.findByAuthority("USER").orElseThrow(() -> new RuntimeException("Autorização não encontrada"));
+        UserRole userRole = roleRepository.findByAuthority("USER").orElseThrow(() -> new RuntimeException("Autorização 'USER' não encontrada no banco de dados."));
 
         Set<UserRole> authorities = new HashSet<>();
+
         authorities.add(userRole);
 
         User newUser = new User();
 
-        newUser.setUsername(username);
+        newUser.setUsername(user.getUsername());
         newUser.setPassword(encodedPassword);
+        newUser.setFirstName(user.getFirstName());
+        newUser.setLastName(user.getLastName());
+        newUser.setGender(user.getGender());
+        newUser.setHireDate(user.getHireDate());
+        newUser.setCurrentJob(user.getCurrentJob());
         newUser.setAuthorities(authorities);
 
         return userRepository.save(newUser);

@@ -1,6 +1,6 @@
 package athosdev.testetecnico.backend.pactovagasinternas.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import athosdev.testetecnico.backend.pactovagasinternas.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,13 +25,20 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_role_junction",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id")}
-    )
-    private Set<UserRole> authorities;
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Column(name = "current_job")
+    private String currentJob;
+
+    @Column(name = "hire_date")
+    private LocalDateTime hireDate;
 
     @ManyToMany
     @JoinTable(
@@ -40,6 +47,14 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
     private Set<Skill> skills = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role_junction",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")}
+    )
+    private Set<UserRole> authorities;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -130,4 +145,43 @@ public class User implements UserDetails {
         this.skills = skills;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public String getCurrentJob() {
+        return currentJob;
+    }
+
+    public void setCurrentJob(String currentJob) {
+        this.currentJob = currentJob;
+    }
+
+    public LocalDateTime getHireDate() {
+        return hireDate;
+    }
+
+    public void setHireDate(LocalDateTime hireDate) {
+        this.hireDate = hireDate;
+    }
 }

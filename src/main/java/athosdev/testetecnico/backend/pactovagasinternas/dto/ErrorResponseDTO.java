@@ -1,14 +1,15 @@
 package athosdev.testetecnico.backend.pactovagasinternas.dto;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 public class ErrorResponseDTO {
 
-    private HttpStatus statusCode;
+    private HttpStatusCode statusCode;
 
     private String message;
 
-    public ErrorResponseDTO(String message, HttpStatus statusCode) {
+    public ErrorResponseDTO(String message, HttpStatusCode statusCode) {
         this.statusCode = statusCode;
         this.message = message;
     }
@@ -21,7 +22,7 @@ public class ErrorResponseDTO {
         this.message = message;
     }
 
-    public HttpStatus getStatusCode() {
+    public HttpStatusCode getStatusCode() {
         return statusCode;
     }
 

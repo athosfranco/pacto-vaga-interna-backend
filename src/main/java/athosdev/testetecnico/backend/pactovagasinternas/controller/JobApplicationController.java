@@ -1,6 +1,7 @@
 package athosdev.testetecnico.backend.pactovagasinternas.controller;
 
 import athosdev.testetecnico.backend.pactovagasinternas.dto.ErrorResponseDTO;
+import athosdev.testetecnico.backend.pactovagasinternas.dto.JobApplicationRequestDTO;
 import athosdev.testetecnico.backend.pactovagasinternas.exception.JobNotFoundException;
 import athosdev.testetecnico.backend.pactovagasinternas.exception.UserNotFoundException;
 import athosdev.testetecnico.backend.pactovagasinternas.model.Job;
@@ -26,22 +27,9 @@ public class JobApplicationController {
     @Autowired
     private JobApplicationService jobApplicationService;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private JobService jobService;
-
     @PostMapping
-    public ResponseEntity<JobApplication> applyToJob(@RequestParam Integer userId, @RequestParam Integer jobId) {
-        User applicant = userService.getUserById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Usuário ID" + userId + " não encontrado"));
-
-        Job appliedJob = jobService.getJobById(jobId)
-                .orElseThrow(() -> new JobNotFoundException("Vaga ID " + jobId + " não encontrada"));
-
-        JobApplication jobApplication = jobApplicationService.applyToJob(applicant, appliedJob);
-
+    public ResponseEntity<JobApplication> createNewJobApplication(@RequestParam Integer userId, @RequestParam Integer jobId, @RequestBody JobApplicationRequestDTO body) {
+        JobApplication jobApplication = jobApplicationService.applyToJob(userId, jobId, body);
         return new ResponseEntity<>(jobApplication, HttpStatus.CREATED);
     }
 
@@ -51,7 +39,7 @@ public class JobApplicationController {
         return new ResponseEntity<>(jobApplications, HttpStatus.OK);
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/byUserId/{userId}")
     public ResponseEntity<List<JobApplication>> getJobApplicationsByUserId(@PathVariable Integer userId) {
         List<JobApplication> jobApplications = jobApplicationService.getJobApplicationsByUserId(userId);
         return new ResponseEntity<>(jobApplications, HttpStatus.OK);
@@ -60,16 +48,11 @@ public class JobApplicationController {
     @GetMapping("/{applicationId}")
     public ResponseEntity<?> getJobApplicationById(@PathVariable Integer applicationId) {
         try {
-
             Optional<JobApplication> user = jobApplicationService.getJobApplicationById(applicationId);
             return ResponseEntity.ok(user);
-
         } catch (ResponseStatusException e) {
             ErrorResponseDTO errorResponse = new ErrorResponseDTO(e.getReason(), (HttpStatus) e.getStatusCode());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 

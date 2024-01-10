@@ -4,7 +4,9 @@ import athosdev.testetecnico.backend.pactovagasinternas.model.Job;
 import athosdev.testetecnico.backend.pactovagasinternas.model.User;
 import athosdev.testetecnico.backend.pactovagasinternas.repository.JobRepository;
 import athosdev.testetecnico.backend.pactovagasinternas.repository.UserRepository;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -42,5 +44,9 @@ public class JobService {
 
     public void deleteJob(Integer jobId) {
         jobRepository.deleteById(jobId);
+    }
+
+    public List<Job> searchJobs(String searchTerm) {
+        return jobRepository.findByTitleContainsIgnoreCaseOrDescriptionContainsIgnoreCase(searchTerm, searchTerm);
     }
 }

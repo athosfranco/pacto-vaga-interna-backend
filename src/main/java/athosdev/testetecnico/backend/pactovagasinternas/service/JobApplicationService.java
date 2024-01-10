@@ -1,10 +1,13 @@
 package athosdev.testetecnico.backend.pactovagasinternas.service;
 
+import athosdev.testetecnico.backend.pactovagasinternas.dto.JobApplicationRequestDTO;
 import athosdev.testetecnico.backend.pactovagasinternas.enums.JobApplicationStage;
+import athosdev.testetecnico.backend.pactovagasinternas.exception.JobNotFoundException;
 import athosdev.testetecnico.backend.pactovagasinternas.model.Job;
 import athosdev.testetecnico.backend.pactovagasinternas.model.JobApplication;
 import athosdev.testetecnico.backend.pactovagasinternas.model.User;
 import athosdev.testetecnico.backend.pactovagasinternas.repository.JobApplicationRepository;
+import athosdev.testetecnico.backend.pactovagasinternas.repository.JobRepository;
 import athosdev.testetecnico.backend.pactovagasinternas.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,10 @@ public class JobApplicationService {
 
     @Autowired
     private JobApplicationRepository jobApplicationRepository;
+
+    @Autowired
+    private JobRepository jobRepository;
+
 
     public Optional<JobApplication> getJobApplicationById(Integer jobApplicationId) {
 
@@ -45,11 +52,20 @@ public class JobApplicationService {
         jobApplicationRepository.deleteById(applicationId);
     }
 
-    public JobApplication applyToJob(User applicant, Job appliedJob) {
+    public JobApplication applyToJob(Integer userId, Integer jobId, JobApplicationRequestDTO body) {
+        var userFound = userRepository.findById(userId).orElseThrow(() -> new JobNotFoundException("Usuário de ID " + userId  + " não encontrado"));
+        var jobFound = jobRepository.findById(jobId)
+                .orElseThrow(() -> new JobNotFoundException("Vaga de ID " + jobId + " não encontrada"));
+
+        if (jobApplicationRepository.existsByApplicantUserIdAndAppliedJob_JobId(userId, jobId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário já se candidatou a esta vaga. Acompanhe seu processo seletivo no Painel do Candidato.");
+        }
+
 
         JobApplication jobApplication = new JobApplication();
-        jobApplication.setApplicant(applicant);
-        jobApplication.setAppliedJob(appliedJob);
+        jobApplication.setApplicant(userFound);
+        jobApplication.setAppliedJob(jobFound);
+        jobApplication.setUserMessage(body.getUserMessage());
         jobApplication.setApplicationDate(LocalDateTime.now());
         jobApplication.setApplicationStage(JobApplicationStage.UNDER_REVIEW);
 

@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface JobApplicationRepository extends JpaRepository<JobApplication, Integer> {
     List<JobApplication> findByApplicantUserId(Integer userId);
+
+    boolean existsByApplicantUserIdAndAppliedJob_JobId(Integer userId, Integer jobId);
 }

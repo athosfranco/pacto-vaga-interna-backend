@@ -3,14 +3,18 @@ package athosdev.testetecnico.backend.pactovagasinternas.controller;
 import athosdev.testetecnico.backend.pactovagasinternas.dto.JobResponseDTO;
 import athosdev.testetecnico.backend.pactovagasinternas.exception.UserNotFoundException;
 import athosdev.testetecnico.backend.pactovagasinternas.model.Job;
+import athosdev.testetecnico.backend.pactovagasinternas.model.Skill;
 import athosdev.testetecnico.backend.pactovagasinternas.model.User;
 import athosdev.testetecnico.backend.pactovagasinternas.repository.UserRepository;
 import athosdev.testetecnico.backend.pactovagasinternas.service.JobService;
+import athosdev.testetecnico.backend.pactovagasinternas.service.SkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +28,9 @@ public class JobController {
 
     @Autowired
     private JobService jobService;
+
+    @Autowired
+    private SkillService skillService;
 
     @GetMapping("/test")
     public String test() {
@@ -39,6 +46,8 @@ public class JobController {
         JobResponseDTO jobResponseDTO = new JobResponseDTO();
         jobResponseDTO.setJobId(job.getJobId());
         jobResponseDTO.setTitle(job.getTitle());
+        jobResponseDTO.setCreatedAt(job.getCreatedAt());
+        jobResponseDTO.setRequiredSkills(job.getRequiredSkills());
         jobResponseDTO.setDescription(job.getDescription());
         jobResponseDTO.setPublishedBy(publishedBy);
         return jobResponseDTO;
@@ -58,10 +67,33 @@ public class JobController {
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Job>> searchJobs(@RequestParam(name = "query", required = false) String searchQuery) {
+        List<Job> searchResults = jobService.searchJobs(searchQuery);
+        return new ResponseEntity<>(searchResults, HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<Job> createJob(@RequestBody Job job) {
+
+        if (job.getRequiredSkills() != null && !job.getRequiredSkills().isEmpty()) {
+
+            List<Skill> updatedSkills = new ArrayList<>();
+
+            // Para cada Skill no Job, salvar Skill se ainda não estiver salva
+            for (Skill skill : job.getRequiredSkills()) {
+                Skill existingSkill = skillService.getOrCreateSkill(skill);
+
+                updatedSkills.add(existingSkill);
+            }
+
+            // lista de skills atualiada
+            job.setRequiredSkills(new HashSet<>(updatedSkills));
+        }
+
+// Salve o Job
         Job savedJob = jobService.saveJob(job);
+
         return new ResponseEntity<>(savedJob, HttpStatus.CREATED);
     }
 

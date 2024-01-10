@@ -40,12 +40,9 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUserById(Integer userId) {
-        if (userRepository.findById(userId).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não foi encontrado (Procurando por ID)");
-        }
-        return userRepository.findById(userId);
+    public User getUserById(Integer userId) {
+        // retornar DTO  e criar uma exception customizado
+        return  userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não foi encontrado (Procurando por ID)"));
     }
-
 
 }
