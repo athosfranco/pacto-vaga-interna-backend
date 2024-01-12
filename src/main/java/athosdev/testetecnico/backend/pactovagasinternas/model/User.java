@@ -59,13 +59,13 @@ public class User implements UserDetails {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @PreUpdate
     protected void onUpdate() {
@@ -184,4 +184,5 @@ public class User implements UserDetails {
     public void setHireDate(LocalDateTime hireDate) {
         this.hireDate = hireDate;
     }
+
 }

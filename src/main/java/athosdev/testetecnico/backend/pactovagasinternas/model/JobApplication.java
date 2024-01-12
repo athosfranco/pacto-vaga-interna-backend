@@ -33,6 +33,10 @@ public class JobApplication {
 
     @Column(name="user_message")
     private String userMessage;
+
+    @Column(name="feedback")
+    private String feedback;
+
     @Column(name = "application_date", nullable = false, updatable = false)
     private LocalDateTime applicationDate;
 
@@ -80,6 +84,14 @@ public class JobApplication {
 
     public void setUserMessage(String userMessage) {
         this.userMessage = userMessage;
+    }
+
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
     }
 
     public LocalDateTime getApplicationDate() {

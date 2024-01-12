@@ -43,7 +43,13 @@ public class SkillService {
     public void addSkillToUser(Integer userId, Integer skillId, Integer expYears) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
-        Skill skill = skillRepository.findById(skillId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Habilidade não encontrada"));
+        Skill skill = skillRepository.findById(skillId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Habilidade não encontrada"));
+
+
+        if (user.getSkills().contains(skill)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Você já cadastrou essa habilidade.");
+        }
 
         skill.setExperienceYears(expYears);
         user.getSkills().add(skill);

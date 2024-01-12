@@ -1,6 +1,7 @@
 package athosdev.testetecnico.backend.pactovagasinternas.service;
 
 import athosdev.testetecnico.backend.pactovagasinternas.dto.JobApplicationRequestDTO;
+import athosdev.testetecnico.backend.pactovagasinternas.dto.JobApplicationUpdateDTO;
 import athosdev.testetecnico.backend.pactovagasinternas.enums.JobApplicationStage;
 import athosdev.testetecnico.backend.pactovagasinternas.exception.JobNotFoundException;
 import athosdev.testetecnico.backend.pactovagasinternas.model.Job;
@@ -16,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -32,11 +34,9 @@ public class JobApplicationService {
 
 
     public Optional<JobApplication> getJobApplicationById(Integer jobApplicationId) {
-
         if (jobApplicationRepository.findById(jobApplicationId).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Candidatura não encontrada");
         }
-
         return jobApplicationRepository.findById(jobApplicationId);
     }
 
@@ -61,13 +61,22 @@ public class JobApplicationService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário já se candidatou a esta vaga. Acompanhe seu processo seletivo no Painel do Candidato.");
         }
 
-
         JobApplication jobApplication = new JobApplication();
         jobApplication.setApplicant(userFound);
         jobApplication.setAppliedJob(jobFound);
         jobApplication.setUserMessage(body.getUserMessage());
         jobApplication.setApplicationDate(LocalDateTime.now());
         jobApplication.setApplicationStage(JobApplicationStage.UNDER_REVIEW);
+
+        return jobApplicationRepository.save(jobApplication);
+    }
+
+    public JobApplication updateJobApplicationStage(Integer applicationId, JobApplicationUpdateDTO requestDTO) {
+        JobApplication jobApplication = getJobApplicationById(applicationId)
+                .orElseThrow(() -> new JobNotFoundException("Job Application with ID " + applicationId + " not found"));
+
+        jobApplication.setApplicationStage(requestDTO.getNewStage());
+        jobApplication.setFeedback(requestDTO.getFeedback());
 
         return jobApplicationRepository.save(jobApplication);
     }

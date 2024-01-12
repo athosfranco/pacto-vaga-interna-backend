@@ -2,14 +2,9 @@ package athosdev.testetecnico.backend.pactovagasinternas.controller;
 
 import athosdev.testetecnico.backend.pactovagasinternas.dto.ErrorResponseDTO;
 import athosdev.testetecnico.backend.pactovagasinternas.dto.JobApplicationRequestDTO;
-import athosdev.testetecnico.backend.pactovagasinternas.exception.JobNotFoundException;
-import athosdev.testetecnico.backend.pactovagasinternas.exception.UserNotFoundException;
-import athosdev.testetecnico.backend.pactovagasinternas.model.Job;
+import athosdev.testetecnico.backend.pactovagasinternas.dto.JobApplicationUpdateDTO;
 import athosdev.testetecnico.backend.pactovagasinternas.model.JobApplication;
-import athosdev.testetecnico.backend.pactovagasinternas.model.User;
 import athosdev.testetecnico.backend.pactovagasinternas.service.JobApplicationService;
-import athosdev.testetecnico.backend.pactovagasinternas.service.JobService;
-import athosdev.testetecnico.backend.pactovagasinternas.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,6 +50,21 @@ public class JobApplicationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
+
+    @PutMapping("/update-stage/{applicationId}")
+    public ResponseEntity<JobApplication> updateJobApplicationStage(
+            @PathVariable Integer applicationId,
+            @RequestBody JobApplicationUpdateDTO requestDTO
+    ) {
+        try {
+            JobApplication updatedApplication = jobApplicationService.updateJobApplicationStage(applicationId, requestDTO);
+            return ResponseEntity.ok(updatedApplication);
+        } catch (ResponseStatusException e) {
+            ErrorResponseDTO errorResponse = new ErrorResponseDTO(e.getReason(), (HttpStatus) e.getStatusCode());
+            return (ResponseEntity<JobApplication>) ResponseEntity.status(HttpStatus.NOT_FOUND);
+        }
+    }
+
 
     @DeleteMapping("/{applicationId}")
     public ResponseEntity<Void> deleteJobApplication(@PathVariable Integer applicationId) {
