@@ -1,0 +1,19 @@
+version: '3'
+services:
+  spring-boot-app:
+    image: pactovagasinternas
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/vagas_internas_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: Fsociety@080912
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: vagas_internas_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Fsociety@080912
+    ports:
+      - "5432:5432"
