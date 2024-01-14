@@ -26,6 +26,7 @@ public class SkillController {
 
     @PostMapping
     public ResponseEntity<Void> createSkill(@RequestBody Skill skill) {
+
         skillService.createSkill(skill);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -34,6 +35,12 @@ public class SkillController {
     public ResponseEntity<Void> addSkillToUser(@RequestParam Integer userId, @RequestParam Integer skillId, @RequestParam Integer expYears) {
         skillService.addSkillToUser(userId, skillId, expYears);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{skillId}")
+    public ResponseEntity<Void> deleteSkill(@PathVariable Integer skillId) {
+        skillService.deleteSkill(skillId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/get-skill-by-user-id/{userId}")

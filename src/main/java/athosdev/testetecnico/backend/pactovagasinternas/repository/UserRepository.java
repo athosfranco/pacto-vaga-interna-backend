@@ -2,6 +2,7 @@ package athosdev.testetecnico.backend.pactovagasinternas.repository;
 
 import athosdev.testetecnico.backend.pactovagasinternas.model.User;
 import athosdev.testetecnico.backend.pactovagasinternas.model.UserRole;
+import athosdev.testetecnico.backend.pactovagasinternas.model.Skill;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +15,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     List<User> findByAuthoritiesContaining(Optional<UserRole> admin);
 
+    List<User> findBySkillsContaining(Skill skill);
 }

@@ -94,4 +94,26 @@ public class SkillService {
 
         return job.getRequiredSkills();
     }
+
+    public void deleteSkill(Integer skillId) {
+        Skill skill = skillRepository.findById(skillId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Habilidade não encontrada"));
+
+
+        List<User> usersWithSkill = userRepository.findBySkillsContaining(skill);
+        for (User user : usersWithSkill) {
+            user.getSkills().remove(skill);
+            userRepository.save(user);
+        }
+
+
+        List<Job> jobsWithSkill = jobRepository.findByRequiredSkillsContaining(skill);
+        for (Job job : jobsWithSkill) {
+            job.getRequiredSkills().remove(skill);
+            jobRepository.save(job);
+        }
+
+        // Delete the skill
+        skillRepository.delete(skill);
+    }
 }
