@@ -41,7 +41,7 @@ O frontend está hospedado no Netlify. O backend e uma instância do banco de da
 ## Rodando a Aplicação na Máquina Local
 
 1. **Backend (Spring Boot):**
-   - Acesse o repositório do backend
+   - Acesse o repositório do backend (https://github.com/athosfranco/pacto-vaga-interna-frontend/tree/main)
    - Faça um clone do projeto
    - Configure as variáveis de ambiente no arquivo de configuração application.properties
    - Execute a aplicação Spring Boot
