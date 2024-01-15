@@ -38,16 +38,20 @@ O frontend está hospedado no Netlify. O backend e uma instância do banco de da
 ### Login: admin 
 ### Senha: 123
 
+Para se candidatar para as vagas, crie uma conta nova no menu "Registrar" ou utilize as credenciais de teste a seguir:
+Login: athosfranco
+Senha: athos123
+
 ## Rodando a Aplicação na Máquina Local
 
 1. **Backend (Spring Boot):**
-   - Acesse o repositório do backend (https://github.com/athosfranco/pacto-vaga-interna-frontend/tree/main)
+   - Acesse o repositório do backend 
    - Faça um clone do projeto
    - Configure as variáveis de ambiente no arquivo de configuração application.properties
    - Execute a aplicação Spring Boot
 
 3. **Frontend (Angular):**
-   - Acesse o repositório do frontend
+   - Acesse o repositório do frontend (https://github.com/athosfranco/pacto-vaga-interna-frontend/tree/main)
    - Faça um clone do projeto
    - Instale as dependências: `npm install`
    - Inicie o servidor de desenvolvimento: `ng serve`
