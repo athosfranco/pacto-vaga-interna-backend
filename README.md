@@ -45,6 +45,8 @@ Para CRIAR, editar ou deletar vagas e avaliar candidaturas, use a conta admin:
 ### Login: admin 
 ### Senha: 123
 
+A API também está documentada no Swagger: https://pacto-vaga-interna-backend-production.up.railway.app/swagger-ui/index.html#/
+
 ## Rodando a Aplicação na Máquina Local
 
 1. **Backend (Spring Boot):**
